@@ -3,33 +3,20 @@ using System;
 using DotNetAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DotNetAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210804054007_JointTableAdded")]
+    partial class JointTableAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.8");
-
-            modelBuilder.Entity("AppUserChat", b =>
-                {
-                    b.Property<Guid>("ChatsId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MembersId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ChatsId", "MembersId");
-
-                    b.HasIndex("MembersId");
-
-                    b.ToTable("AppUserChat");
-                });
 
             modelBuilder.Entity("DotNetAPI.Models.AppUser", b =>
                 {
@@ -144,7 +131,22 @@ namespace DotNetAPI.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
+                });
+
+            modelBuilder.Entity("DotNetAPI.Models.UserChat", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId", "ChatId");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("UserChats");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -275,21 +277,6 @@ namespace DotNetAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("AppUserChat", b =>
-                {
-                    b.HasOne("DotNetAPI.Models.Chat", null)
-                        .WithMany()
-                        .HasForeignKey("ChatsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DotNetAPI.Models.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DotNetAPI.Models.Chat", b =>
                 {
                     b.HasOne("DotNetAPI.Models.Message", "LastMessage")
@@ -305,14 +292,30 @@ namespace DotNetAPI.Migrations
                         .WithMany()
                         .HasForeignKey("AuthorId");
 
-                    b.HasOne("DotNetAPI.Models.Chat", "Chat")
+                    b.HasOne("DotNetAPI.Models.Chat", null)
                         .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ChatId");
 
                     b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("DotNetAPI.Models.UserChat", b =>
+                {
+                    b.HasOne("DotNetAPI.Models.Chat", "Chat")
+                        .WithMany("Members")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DotNetAPI.Models.AppUser", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Chat");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -366,8 +369,15 @@ namespace DotNetAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DotNetAPI.Models.AppUser", b =>
+                {
+                    b.Navigation("Chats");
+                });
+
             modelBuilder.Entity("DotNetAPI.Models.Chat", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618

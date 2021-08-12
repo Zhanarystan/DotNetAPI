@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using DotNetAPI.Data;
 using DotNetAPI.Extensions;
+using DotNetAPI.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using DotNetAPI.Middleware;
 using Microsoft.OpenApi.Models;
 
 namespace DotNetAPI
@@ -38,7 +40,10 @@ namespace DotNetAPI
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 opt.Filters.Add(new AuthorizeFilter(policy));
-            });
+            }).AddNewtonsoftJson(
+                opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
             services.AddApplicationServices(_config);
             services.AddIdentityServices(_config);
             
@@ -47,9 +52,10 @@ namespace DotNetAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseMiddleware<ExceptionMiddleware>();
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DotNetAPI v1"));
             }
@@ -74,6 +80,7 @@ namespace DotNetAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chathub");
             });
         }
     }

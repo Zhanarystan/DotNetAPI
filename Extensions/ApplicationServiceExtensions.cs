@@ -1,8 +1,12 @@
+using DotNetAPI.Core;
 using DotNetAPI.Data;
+using DotNetAPI.Interfaces;
+using DotNetAPI.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using DotNetAPI.Repositories;
 
 namespace DotNetAPI.Extensions
 {
@@ -23,9 +27,13 @@ namespace DotNetAPI.Extensions
             {
                 opt.AddPolicy("CorsPolicy", policy => 
                 {
-                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+                    policy.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins("http://localhost:3000");
                 });
             });
+            services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            services.AddScoped<IUserAccessor, UserAccessor>();
+            services.AddScoped<IChatRepository,ChatRepository>();
+            services.AddSignalR();
 
             return services;
         }

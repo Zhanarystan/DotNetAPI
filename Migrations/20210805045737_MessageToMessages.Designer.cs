@@ -3,14 +3,16 @@ using System;
 using DotNetAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DotNetAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210805045737_MessageToMessages")]
+    partial class MessageToMessages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,7 +128,10 @@ namespace DotNetAPI.Migrations
                     b.Property<string>("AuthorId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ChatId")
+                    b.Property<string>("ChatId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ChatId1")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FilePath")
@@ -142,7 +147,7 @@ namespace DotNetAPI.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("ChatId");
+                    b.HasIndex("ChatId1");
 
                     b.ToTable("Messages");
                 });
@@ -307,7 +312,7 @@ namespace DotNetAPI.Migrations
 
                     b.HasOne("DotNetAPI.Models.Chat", "Chat")
                         .WithMany("Messages")
-                        .HasForeignKey("ChatId")
+                        .HasForeignKey("ChatId1")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Author");
