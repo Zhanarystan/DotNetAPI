@@ -3,14 +3,16 @@ using System;
 using DotNetAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DotNetAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220129105235_AlertModel")]
+    partial class AlertModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,7 +181,7 @@ namespace DotNetAPI.Migrations
                     b.Property<Guid?>("StatusId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("UserIdId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -188,7 +190,7 @@ namespace DotNetAPI.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserIdId");
 
                     b.ToTable("Alerts");
                 });
@@ -371,15 +373,15 @@ namespace DotNetAPI.Migrations
                         .WithMany()
                         .HasForeignKey("StatusId");
 
-                    b.HasOne("DotNetAPI.Models.AppUser", "User")
+                    b.HasOne("DotNetAPI.Models.AppUser", "UserId")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserIdId");
 
                     b.Navigation("Specialist");
 
                     b.Navigation("Status");
 
-                    b.Navigation("User");
+                    b.Navigation("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

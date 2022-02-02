@@ -33,6 +33,7 @@ namespace DotNetAPI.Extensions
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IChatRepository,ChatRepository>();
+            services.AddScoped<IAlertRepository,AlertRepository>();
             services.AddSignalR();
 
             return services;

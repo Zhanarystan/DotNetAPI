@@ -80,7 +80,7 @@ namespace DotNetAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chathub");
+                endpoints.MapHub<AlertHub>("/alerthub");
             });
         }
     }

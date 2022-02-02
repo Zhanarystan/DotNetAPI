@@ -24,6 +24,7 @@ namespace DotNetAPI.Core
                                 Image = m.Image,
                                 DisplayName = m.DisplayName, 
                             }).FirstOrDefault()));
+            CreateMap<TroubleAlert, AlertDto>();
         }
     }
 }

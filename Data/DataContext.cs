@@ -12,6 +12,8 @@ namespace DotNetAPI.Data
 
         public DbSet<Chat> Chats {get; set;}
         public DbSet<Message> Messages {get; set;}
+        public DbSet<TroubleAlert> Alerts {get; set;}
+        public DbSet<Status> Statuses { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

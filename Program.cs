@@ -14,7 +14,7 @@ namespace DotNetAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -25,7 +25,8 @@ namespace DotNetAPI
             try
             {
                 var context = services.GetRequiredService<DataContext>();
-                context.Database.Migrate();
+                await context.Database.MigrateAsync();
+                await StatusSeeder.SeedStatuses(context);
             } 
             catch(Exception ex)
             {
@@ -33,7 +34,7 @@ namespace DotNetAPI
                 logger.LogError(ex, "An error occured during migration");
             }
 
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

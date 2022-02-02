@@ -29,6 +29,5 @@ namespace DotNetAPI.Controllers
         {
             return HandleResult(await _chatRepository.CreateChat(destinationEmail));            
         }
-
     }
 }
